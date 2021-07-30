@@ -28,7 +28,6 @@ jobs:
      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
      #   with:
      #     githubToken: ${{ secrets.GITHUB_TOKEN }}
-
       # Build
       - name: Build project
         uses: game-ci/unity-builder@v2
@@ -42,3 +41,12 @@ jobs:
         with:
           name: Build
           path: build
+          
+      - name: Butler Push
+        uses: josephbmanley/butler-publish-itchio-action@v1.0.2
+        env:
+          BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+          CHANNEL: webgl
+          ITCH_GAME: scorespace14
+          ITCH_USER: citizendevelopers
+          PACKAGE: build
