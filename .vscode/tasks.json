@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "group": "test",
+            "label": "sync-ART",
+            "type": "shell",
+            "command": "sh ./Assets/Art/automation/sync.sh"
+        }, {
+            "group": "test",
+            "label": "preview-ART",
+            "type": "shell",
+            "command": "sh ./Assets/Art/automation/preview.sh"
+        }
+    ]
+}

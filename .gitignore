@@ -69,3 +69,12 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+
+
+# Nested Art Stuff
+/[Aa]ssets/[Aa]rt/**
+/[Aa]ssets/Art.meta
+
+# Package addons
+Spine Examples/
+Spine Examples.meta
