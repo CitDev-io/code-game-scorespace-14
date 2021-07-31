@@ -7,6 +7,8 @@ using System.Linq;
 
 public class RoundController : MonoBehaviour
 {
+    [SerializeField] GameObject nextRoundPanel;
+    [SerializeField] GameObject losePanel;
 
     [SerializeField] public int HitPoints;
     [SerializeField] public int HitPointsMax = 50;
@@ -24,7 +26,39 @@ public class RoundController : MonoBehaviour
     int armorValue = 1;
 
     int turn = 1;
+    int round = 1;
+    public int KillRequirement = 30;
     int tilesCleared = 0;
+
+    private void Start()
+    {
+        nextRoundPanel.SetActive(false);
+        losePanel.SetActive(false);
+        GameController_DDOL _gc = GameObject.FindObjectOfType<GameController_DDOL>();
+
+        round = _gc.round;
+
+        SetEnemyStatsByRound();
+    }
+
+    void SetEnemyStatsByRound()
+    {
+        switch(round)
+        {
+            case 1:
+                enemyHp = 1;
+                enemyDmg = 1;
+                break;
+            case 2:
+                enemyHp = 4;
+                enemyDmg = 2;
+                break;
+            default:
+                enemyHp = 10;
+                enemyDmg = 3;
+                break;
+        }
+    }
 
     void AssessAttack(int damage)
     {
@@ -50,7 +84,7 @@ public class RoundController : MonoBehaviour
         if (HitPoints == 0)
         {
             // (e) PLAYER DIED
-            Debug.Log("you died");
+            DoLose();
         }
     }
 
@@ -96,7 +130,7 @@ public class RoundController : MonoBehaviour
             {
                 // (e) : MONSTER DIED
                 clearableTiles.Add(monster);
-                Kills += 1;
+                OnMonsterKill();
             } else
             {
                 // (e) : MONSTER SURVIVED ATTACK
@@ -107,6 +141,27 @@ public class RoundController : MonoBehaviour
         board.ClearTiles(clearableTiles);
         // (e) : FINISHED RESOLVING USER COLLECTION
         DoEnemiesTurn();
+    }
+
+    void OnMonsterKill()
+    {
+        Kills += 1;
+
+        if (Kills >= KillRequirement)
+        {
+            DoVictory();
+        }
+    }
+
+    void DoLose()
+    {
+        GameObject.FindObjectOfType<GameController_DDOL>().round = 1;
+        losePanel.SetActive(true);
+    }
+    void DoVictory()
+    {
+        GameObject.FindObjectOfType<GameController_DDOL>().round += 1;
+        nextRoundPanel.SetActive(true);
     }
 
     void DoEnemiesTurn()
