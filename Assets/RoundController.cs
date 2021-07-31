@@ -17,6 +17,9 @@ public class RoundController : MonoBehaviour
     [SerializeField] public int ArmorMax = 50;
     [SerializeField] public int Coins = 0;
     [SerializeField] public int Kills = 0;
+    [SerializeField] public int CharacterLevel = 1;
+    [SerializeField] public int NextLevelAt = 5;
+    GameController_DDOL _gc;
 
     int enemyHp = 4;
     int enemyDmg = 2;
@@ -29,15 +32,20 @@ public class RoundController : MonoBehaviour
     int round = 1;
     public int KillRequirement = 30;
     int tilesCleared = 0;
+    
+    public int TotalKills()
+    {
+        return _gc.totalKills;
+    }
 
     private void Start()
     {
         nextRoundPanel.SetActive(false);
         losePanel.SetActive(false);
-        GameController_DDOL _gc = GameObject.FindObjectOfType<GameController_DDOL>();
+        _gc = GameObject.FindObjectOfType<GameController_DDOL>();
 
         round = _gc.round;
-
+        DoCharacterProgressionCheck();
         SetEnemyStatsByRound();
     }
 
@@ -146,16 +154,44 @@ public class RoundController : MonoBehaviour
     void OnMonsterKill()
     {
         Kills += 1;
-
+        GameObject.FindObjectOfType<GameController_DDOL>().OnMonsterKilled();
+        DoCharacterProgressionCheck();
+      
         if (Kills >= KillRequirement)
         {
             DoVictory();
         }
     }
 
+    void DoCharacterProgressionCheck()
+    {
+        int totalKills = GameObject.FindObjectOfType<GameController_DDOL>().totalKills;
+        int prevLevel = CharacterLevel;
+        int achievedLevel = 1;
+        int costOfEntry = 5;
+        while (totalKills >= costOfEntry)
+        {
+            achievedLevel += 1;
+            costOfEntry += achievedLevel * 5;
+        }
+
+        CharacterLevel = achievedLevel;
+        NextLevelAt = costOfEntry;
+
+        if (achievedLevel > prevLevel)
+        {
+            DoLevelUp(prevLevel, achievedLevel);
+        }
+    }
+
+    void DoLevelUp(int from, int to)
+    {
+        Debug.Log("DING From " + from + " to " + to);
+    }
+
     void DoLose()
     {
-        GameObject.FindObjectOfType<GameController_DDOL>().round = 1;
+        _gc.Reset();
         losePanel.SetActive(true);
     }
     void DoVictory()
