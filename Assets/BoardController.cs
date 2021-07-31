@@ -10,11 +10,11 @@ namespace citdev {
         [SerializeField] GameObject tilePrefab;
         List<GameTile> tiles = new List<GameTile>();
         List<GameTile> selection = new List<GameTile>();
+        RoundController _rc;
 
-        TileType GetRandomNextTile()
+        private void Awake()
         {
-            int tileChoice = Random.Range(0, 4);
-            return (TileType)tileChoice;
+            _rc = GameObject.FindObjectOfType<RoundController>();
         }
 
         void StartGame()
@@ -29,7 +29,7 @@ namespace citdev {
                         Quaternion.identity
                     );
                     GameTile tile = g.GetComponent<GameTile>();
-                    tile.SetTileType(GetRandomNextTile());
+                    tile.SetTileType(_rc.GetNextTile(true));
                     tile.SnapToPosition(colid, 10);
                     tile.AssignPosition(colid, rowid);
                     tiles.Add(tile);
@@ -39,25 +39,24 @@ namespace citdev {
 
         void CollectTiles(List<GameTile> collected)
         {
-            // yay! here's the stuff you got
-
+            _rc.PlayerCollectedTiles(collected, this);
         }
 
         bool Reclick()
         {
-            // check if this is a finishable sequence
-            // take action
-            // remove selection
+            var finishable = selection.Count > 1;
 
+            if (finishable)
+            {
+                CollectTiles(selection);
+                ClearSelection();
+            }
 
-            CollectTiles(selection);
-            ClearSelection();
-            return true;
+            return finishable;
         }
 
         void ClearSelection()
         {
-            ClearTiles(selection);
             foreach(GameTile t in selection)
             {
                 t.ToggleHighlight(false);
@@ -65,7 +64,7 @@ namespace citdev {
             selection.Clear();
         }
 
-        void ClearTiles(List<GameTile> clearedTiles)
+        public void ClearTiles(List<GameTile> clearedTiles)
         {
             clearedTiles.OrderByDescending(o => o.row);
             foreach(GameTile t in clearedTiles)
@@ -84,7 +83,7 @@ namespace citdev {
             }
 
             tile.SnapToPosition(tile.col, 9);
-            tile.SetTileType(GetRandomNextTile());
+            tile.SetTileType(_rc.GetNextTile());
             tile.row = 8;
         }
 
@@ -114,7 +113,7 @@ namespace citdev {
             {
                 bool isEligible = false;
 
-                if (selection.Count == 0) {
+                if (selection.Count == 0 && tile.tileType != TileType.Monster) {
                     isEligible = true;
                 }
 
@@ -122,7 +121,7 @@ namespace citdev {
                 if (
                     lastTile != null
                     && isTangential(tile, lastTile)
-                    && lastTile.tileType == tile.tileType
+                    && isChainable(tile, lastTile)
                 )
                 {
                     isEligible = true;
@@ -140,6 +139,21 @@ namespace citdev {
             }
 
 
+        }
+
+        bool isChainable(GameTile first, GameTile next)
+        {
+            TileType[] attackChainTiles = new TileType[] { TileType.Sword, TileType.Monster };
+            if (first.tileType == next.tileType) return true;
+
+            if (
+                attackChainTiles.Contains(first.tileType)
+                && attackChainTiles.Contains(next.tileType)
+            ) {
+                return true;
+            }
+
+            return false;
         }
 
         bool isTangential(GameTile tile1, GameTile tile2)
