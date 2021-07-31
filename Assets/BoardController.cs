@@ -11,30 +11,31 @@ namespace citdev {
         List<GameTile> tiles = new List<GameTile>();
         List<GameTile> selection = new List<GameTile>();
         RoundController _rc;
+        LineRenderer _lr;
 
         int TOP_COLUMN_INDEX = 7;
         int COUNT_ROWS = 8;
         int COUNT_COLS = 8;
 
         bool isDragging = false;
+        int draggedTiles = 0;
 
         private void Update()
         {
            if (Input.GetKeyUp(KeyCode.Mouse0))
             {
                 isDragging = false;
-            }
-
-
-           if (isDragging)
-            {
-                Debug.Log("YOU DRAGGIN");
+                if (draggedTiles > 0)
+                {
+                    OnPlayerSolveAttemptComplete();
+                }
             }
         }
 
         private void Awake()
         {
             _rc = GameObject.FindObjectOfType<RoundController>();
+            _lr = gameObject.GetComponent<LineRenderer>();
         }
 
         void StartGame()
@@ -60,17 +61,18 @@ namespace citdev {
             _rc.PlayerCollectedTiles(collected, this);
         }
 
-        bool Reclick()
+        void OnPlayerSolveAttemptComplete()
         {
-            var finishable = selection.Count > 2;
-
-            if (finishable)
+            if (isSelectionFinishable())
             {
                 CollectTiles(selection);
                 ClearSelection();
             }
+        }
 
-            return finishable;
+        bool isSelectionFinishable()
+        {
+            return selection.Count > 2;
         }
 
         void ClearSelection()
@@ -80,6 +82,15 @@ namespace citdev {
                 t.ToggleHighlight(false);
             }
             selection.Clear();
+            OnSelectionChange();
+        }
+
+        void OnSelectionChange()
+        {
+            _lr.positionCount = selection.Count;
+            _lr.SetPositions(
+                selection.Select((o) => o.transform.position).ToArray()
+            );
         }
 
         public List<GameTile> GetMonsters()
@@ -108,56 +119,93 @@ namespace citdev {
             _rc.RecycleTileForPosition(tile, new Vector2(tile.col, TOP_COLUMN_INDEX));
         }
 
+        public void OnTileDragOver(GameTile tile)
+        {
+            if (!isDragging) return;
+            draggedTiles += 1;
+            DoUserIndicatingTile(tile);
+        }
+
         public void OnTileClick(GameTile tile)
         {
-            if (selection.Contains(tile))
+            isDragging = true;
+            draggedTiles = 0;
+            if (!isEligibleToAddToSelection(tile) && !selection.Contains(tile))
             {
-                int index = selection.IndexOf(tile);
-
-                bool reclickingLast = (index + 1 == selection.Count);
-                if (reclickingLast)
-                {
-                    bool captureableReclick = Reclick();
-                    if (captureableReclick)
-                    {
-                        return;
-                    }
-                }
-
-                List<GameTile> tilesToUnhighlight = selection.GetRange(index, selection.Count - index);
-                foreach(GameTile t in tilesToUnhighlight)
-                {
-                    t.ToggleHighlight(false);
-                    selection.Remove(t);
-                }
-            } else
-            {
-                bool isEligible = false;
-
-                if (selection.Count == 0 && tile.tileType != TileType.Monster) {
-                    isEligible = true;
-                }
-
-                GameTile lastTile = selection.Count > 0 ? selection.ElementAt(selection.Count - 1) : null;
-                if (
-                    lastTile != null
-                    && isTangential(tile, lastTile)
-                    && isChainable(tile, lastTile)
-                )
-                {
-                    isEligible = true;
-                }
-
-
-                if (isEligible)
-                {
-                    selection.Add(tile);
-                    tile.ToggleHighlight(true);
-                } else
-                {
-                    // Clicked an ineligible tile
-                }
+                ClearSelection();
             }
+            DoUserIndicatingTile(tile);
+        }
+        
+        void HandleUserReindicatingTile(GameTile tile)
+        {
+            bool endingManualClicks =
+                isSelectionFinishable()
+                && draggedTiles == 0
+                && doesTileMatchLastInSelection(tile);
+            if (endingManualClicks)
+            {
+                OnPlayerSolveAttemptComplete();
+                return;
+            }
+            int index = selection.IndexOf(tile);
+
+            bool reclickingLast = (index + 1 == selection.Count);
+            if (reclickingLast)
+            {
+                return;
+            }
+
+            List<GameTile> tilesToUnhighlight = selection.GetRange(index, selection.Count - index);
+            foreach (GameTile t in tilesToUnhighlight)
+            {
+                t.ToggleHighlight(false);
+                selection.Remove(t);
+                OnSelectionChange();
+            }
+        }
+
+        void AddTileToSelectionIfEligible(GameTile tile)
+        {
+            if (isEligibleToAddToSelection(tile))
+            {
+                selection.Add(tile);
+                OnSelectionChange();
+                tile.ToggleHighlight(true);
+            }
+        }
+
+        void DoUserIndicatingTile(GameTile tile)
+        {
+            bool AlreadySelected = selection.Contains(tile);
+
+            if (AlreadySelected)
+            {
+                HandleUserReindicatingTile(tile);
+                return;
+            }
+
+            AddTileToSelectionIfEligible(tile);
+        }
+
+        bool isEligibleToAddToSelection(GameTile tile)
+        {
+            if (selection.Count == 0 && tile.tileType != TileType.Monster)
+            {
+                return true;
+            }
+
+            GameTile lastTile = selection.Count > 0 ? selection.ElementAt(selection.Count - 1) : null;
+            if (
+                lastTile != null
+                && isTangential(tile, lastTile)
+                && isChainable(tile, lastTile)
+            )
+            {
+                return true;
+            }
+
+            return false;
         }
 
         bool isChainable(GameTile first, GameTile next)
@@ -180,6 +228,15 @@ namespace citdev {
             int rowDiff = Mathf.Abs(tile1.row - tile2.row);
             int colDiff = Mathf.Abs(tile1.col - tile2.col);
             return (rowDiff < 2) && (colDiff < 2) && (rowDiff + colDiff > 0);
+        }
+
+        bool doesTileMatchLastInSelection(GameTile tile)
+        {
+            if (selection.Count == 0) return false;
+
+            var lastTile = selection.ElementAt(selection.Count - 1);
+
+            return lastTile == tile;
         }
 
         void Start()

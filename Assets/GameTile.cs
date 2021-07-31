@@ -79,6 +79,12 @@ namespace citdev {
 
             bc.OnTileClick(this);
         }
+        private void OnMouseEnter()
+        {
+            var bc = GameObject.FindObjectOfType<BoardController>();
+
+            bc.OnTileDragOver(this);
+        }
 
         public void ToggleHighlight(bool setVal)
         {
