@@ -272,7 +272,7 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 246eaf1138975f74580f6c45f8a2f1df, type: 3}
   - {fileID: 21300000, guid: 492ef31b3b5028949a58fcfa7534a53d, type: 3}
   - {fileID: 21300000, guid: 71a2ea0f233823b499c31dc685754911, type: 3}
-  - {fileID: 21300000, guid: 4667ca00c79d2b7459b8f9b265250edf, type: 3}
+  - {fileID: 21300000, guid: d9dc2cf64668118489d63443d2805e31, type: 3}
   tileType: 0
 --- !u!61 &576351188
 BoxCollider2D:
