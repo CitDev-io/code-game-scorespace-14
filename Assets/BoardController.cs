@@ -16,6 +16,22 @@ namespace citdev {
         int COUNT_ROWS = 8;
         int COUNT_COLS = 8;
 
+        bool isDragging = false;
+
+        private void Update()
+        {
+           if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                isDragging = false;
+            }
+
+
+           if (isDragging)
+            {
+                Debug.Log("YOU DRAGGIN");
+            }
+        }
+
         private void Awake()
         {
             _rc = GameObject.FindObjectOfType<RoundController>();
@@ -169,11 +185,6 @@ namespace citdev {
         void Start()
         {
             StartGame();
-        }
-
-        void Update()
-        {
-
         }
     }
 

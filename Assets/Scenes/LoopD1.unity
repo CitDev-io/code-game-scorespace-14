@@ -476,13 +476,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nextRoundPanel: {fileID: 1267161933}
   losePanel: {fileID: 1886390411}
-  HitPoints: 2
-  HitPointsMax: 50
-  Armor: 10
-  ArmorMax: 50
+  HitPoints: 20
+  HitPointsMax: 20
+  Armor: 0
+  ArmorMax: 20
   Coins: 0
   Kills: 0
-  KillRequirement: 3
+  KillRequirement: 30
 --- !u!1 &202771479
 GameObject:
   m_ObjectHideFlags: 0
