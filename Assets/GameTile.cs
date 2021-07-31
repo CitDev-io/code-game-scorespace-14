@@ -1,20 +1,32 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 namespace citdev {
     public class GameTile : MonoBehaviour
     {
-        public int row = 5; // Y Y Y Y Y Y 
-        public int col = 5; // X X X X X X
+        [Header("Plumbing")]
         [SerializeField] GameObject highlight;
         [SerializeField] SpriteRenderer sr;
-        [SerializeField] bool isHighlighted = false;
+        [SerializeField] public TextMeshProUGUI label1;
+        [SerializeField] public TextMeshProUGUI label2;
         [SerializeField]
         List<Sprite> icons = new List<Sprite>();
-        public TileType tileType;
 
+        [Header("State")]
+        public bool isHighlighted = false;
+        public TileType tileType;
+        public int HitPoints = 0;
+        public int Power = 0;
+        public int TurnAppeared = 0;
+
+        [Space(25)]
         float speed = 7f;
+
+        [Header("Assignment")]
+        public int row = 5; // Y Y Y Y Y Y 
+        public int col = 5; // X X X X X X
 
         public void SetTileType(TileType tt)
         {

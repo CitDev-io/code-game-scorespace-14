@@ -12,6 +12,10 @@ namespace citdev {
         List<GameTile> selection = new List<GameTile>();
         RoundController _rc;
 
+        int TOP_COLUMN_INDEX = 7;
+        int COUNT_ROWS = 8;
+        int COUNT_COLS = 8;
+
         private void Awake()
         {
             _rc = GameObject.FindObjectOfType<RoundController>();
@@ -19,9 +23,9 @@ namespace citdev {
 
         void StartGame()
         {
-            for (var rowid = 0; rowid <= 8; rowid++)
+            for (var rowid = 0; rowid < COUNT_ROWS; rowid++)
             {
-                for (var colid = 0; colid <= 8; colid++)
+                for (var colid = 0; colid < COUNT_COLS; colid++)
                 {
                     GameObject g = GameObject.Instantiate(
                         tilePrefab,
@@ -29,9 +33,7 @@ namespace citdev {
                         Quaternion.identity
                     );
                     GameTile tile = g.GetComponent<GameTile>();
-                    tile.SetTileType(_rc.GetNextTile(true));
-                    tile.SnapToPosition(colid, 10);
-                    tile.AssignPosition(colid, rowid);
+                    _rc.RecycleTileForPosition(tile, new Vector2(colid, rowid));
                     tiles.Add(tile);
                 }
             }
@@ -44,7 +46,7 @@ namespace citdev {
 
         bool Reclick()
         {
-            var finishable = selection.Count > 1;
+            var finishable = selection.Count > 2;
 
             if (finishable)
             {
@@ -62,6 +64,11 @@ namespace citdev {
                 t.ToggleHighlight(false);
             }
             selection.Clear();
+        }
+
+        public List<GameTile> GetMonsters()
+        {
+            return tiles.Where((o) => o.tileType == TileType.Monster).ToList();
         }
 
         public void ClearTiles(List<GameTile> clearedTiles)
@@ -82,9 +89,7 @@ namespace citdev {
                 t.row -= 1;
             }
 
-            tile.SnapToPosition(tile.col, 9);
-            tile.SetTileType(_rc.GetNextTile());
-            tile.row = 8;
+            _rc.RecycleTileForPosition(tile, new Vector2(tile.col, TOP_COLUMN_INDEX));
         }
 
         public void OnTileClick(GameTile tile)
@@ -137,8 +142,6 @@ namespace citdev {
                     // Clicked an ineligible tile
                 }
             }
-
-
         }
 
         bool isChainable(GameTile first, GameTile next)
