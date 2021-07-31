@@ -8,9 +8,19 @@ namespace citdev {
         public int row = 5; // Y Y Y Y Y Y 
         public int col = 5; // X X X X X X
         [SerializeField] GameObject highlight;
+        [SerializeField] SpriteRenderer sr;
         [SerializeField] bool isHighlighted = false;
+        [SerializeField]
+        List<Sprite> icons = new List<Sprite>();
+        public TileType tileType;
 
         float speed = 7f;
+
+        public void SetTileType(TileType tt)
+        {
+            tileType = tt;
+            sr.sprite = icons[(int)tt];
+        }
 
         void Start()
         {
