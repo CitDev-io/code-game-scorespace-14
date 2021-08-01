@@ -5,8 +5,12 @@ using UnityEngine;
 using TMPro;
 using System.Linq;
 
+public delegate void NoParamDelegate();
+
 public class RoundController : MonoBehaviour
 {
+    public NoParamDelegate OnRoundEnd;
+
     [SerializeField] GameObject nextRoundPanel;
     [SerializeField] GameObject losePanel;
     [SerializeField] GameObject levelupPanel;
@@ -18,6 +22,9 @@ public class RoundController : MonoBehaviour
     [SerializeField] public int NextLevelAt = 5;
     GameController_DDOL _gc;
 
+    bool roundEnded = false;
+    bool WaitingForUpgrade = false;
+
     [SerializeField] List<UI_UpgradeOption> upgradeSlots;
 
     int enemyHp = 4;
@@ -25,7 +32,7 @@ public class RoundController : MonoBehaviour
 
     int turn = 1;
     int round = 1;
-    public int KillRequirement = 3;
+    public int KillRequirement = 15;
     int tilesCleared = 0;
 
     private void Update()
@@ -52,6 +59,7 @@ public class RoundController : MonoBehaviour
 
     public void UpgradeSelected()
     {
+        WaitingForUpgrade = false;
         levelupPanel.SetActive(false);
     }
 
@@ -70,8 +78,10 @@ public class RoundController : MonoBehaviour
 
     void SetupCharacterForRound()
     {
-        int startingShields = _gc.GetUpgradeValues().RoundStartShieldCount;
+        CharacterUpgrade cu = _gc.GetUpgradeValues();
+        int startingShields = cu.RoundStartShieldCount;
         Armor += startingShields;
+        HitPoints = cu.HitPointMax;
     }
 
     void SetEnemyStatsByRound()
@@ -218,6 +228,7 @@ public class RoundController : MonoBehaviour
     void DoLevelUp(int from, int to)
     {
         if (from == 0) return;
+        WaitingForUpgrade = true;
 
         levelupPanel.SetActive(true);
 
@@ -251,12 +262,31 @@ public class RoundController : MonoBehaviour
     }
     void DoVictory()
     {
+        roundEnded = true;
         _gc.round += 1;
-        nextRoundPanel.SetActive(true);
+        OnRoundEnd?.Invoke();
+        StartCoroutine("RoundVictory");
+    }
+
+    IEnumerator RoundVictory()
+    {
+        while(WaitingForUpgrade)
+        {
+            yield return new WaitForSeconds(1f);
+        }
+
+        yield return new WaitForSeconds(0.5f);
+        FindObjectOfType<UI_SlidingStartText>().GoGoStartText("ROUND COMPLETE", "ROUND COMPLETE");
+
+
+        yield return new WaitForSeconds(3f);
+        _gc.ChangeScene("RoundScore");    
     }
 
     void DoEnemiesTurn()
     {
+        if (roundEnded) return;
+
         // deal damage to player for existing monsters
         var monsters = GameObject.FindObjectOfType<BoardController>().GetMonsters()
             .Where((o) => o.TurnAppeared < turn).ToList();
@@ -265,6 +295,7 @@ public class RoundController : MonoBehaviour
                 .Aggregate(0, (acc, cur) => acc + cur.Power);
 
         AssessAttack(damageReceived);
+        FindObjectOfType<BoardController>()?.EnemyIconsTaunt();
         turn += 1;
     }
 

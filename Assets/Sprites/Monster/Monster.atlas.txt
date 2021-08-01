@@ -1,0 +1,12 @@
+Monster.png
+size:751,344
+filter:Linear,Linear
+pma:true
+monster1-closed
+bounds:403,2,340,346
+offsets:1,1,342,349
+rotate:90
+monster1-open
+bounds:2,2,340,399
+offsets:1,2,342,403
+rotate:90

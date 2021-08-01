@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Spine.Unity;
 
 namespace citdev {
     public class GameTile : MonoBehaviour
@@ -13,6 +14,7 @@ namespace citdev {
         [SerializeField] public TextMeshProUGUI label2;
         [SerializeField]
         List<Sprite> icons = new List<Sprite>();
+        [SerializeField] GameObject MonsterFace;
 
         [Header("State")]
         public bool isHighlighted = false;
@@ -32,6 +34,16 @@ namespace citdev {
         {
             tileType = tt;
             sr.sprite = icons[(int)tt];
+
+            bool isAMonster = tt == TileType.Monster;
+            MonsterFace.SetActive(isAMonster);
+            sr.enabled = !isAMonster;
+        }
+
+        public void MonsterMenace()
+        {
+            MonsterFace.GetComponent<SkeletonAnimation>().AnimationState.SetAnimation(0, "attack", false);
+            MonsterFace.GetComponent<SkeletonAnimation>().AnimationState.AddAnimation(0, "idle2", true, 0f);
         }
 
         void Start()

@@ -11,12 +11,27 @@ public class GameController_DDOL : MonoBehaviour
     public List<CharacterUpgrade> upgrades = new List<CharacterUpgrade>();
     CharacterUpgrade _base;
     CharacterUpgrade aggregate;
+    ChangeScene _sceneChanger;
+
+    public bool hasHelmet = false;
+    public bool hasChestplate = false;
+    public bool hasBelt = false;
 
     void Awake()
     {
         _base = Resources.Load<CharacterUpgrade>("CharacterUpgrade/Base");
         DontDestroyOnLoad(this.gameObject);
         Reset();
+    }
+
+    private void Start()
+    {
+        _sceneChanger = GetComponent<ChangeScene>();
+    }
+
+    public void ChangeScene(string sceneName)
+    {
+        _sceneChanger.SwapToScene(sceneName);
     }
 
     public void Reset()

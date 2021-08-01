@@ -19,9 +19,25 @@ namespace citdev {
 
         bool isDragging = false;
         int draggedTiles = 0;
+        bool isFrozen = false;
+
+        public void ToggleTileFreeze(bool freeze)
+        {
+            selection.Clear();
+            isFrozen = freeze;
+        }
+
+        public void EnemyIconsTaunt()
+        {
+            foreach(GameTile monster in tiles.Where((o) => o.tileType == TileType.Monster)) {
+                monster.MonsterMenace();
+            }
+                
+        }
 
         private void Update()
         {
+            if (isFrozen) return;
            if (Input.GetKeyUp(KeyCode.Mouse0))
             {
                 isDragging = false;
@@ -36,6 +52,18 @@ namespace citdev {
         {
             _rc = GameObject.FindObjectOfType<RoundController>();
             _lr = gameObject.GetComponent<LineRenderer>();
+            _rc.OnRoundEnd += OnRoundEnd;
+        }
+
+        private void OnDestroy()
+        {
+            if (_rc != null)
+                _rc.OnRoundEnd -= OnRoundEnd;
+        }
+
+        void OnRoundEnd()
+        {
+            ToggleTileFreeze(true);
         }
 
         void StartGame()
@@ -121,6 +149,8 @@ namespace citdev {
 
         public void OnTileDragOver(GameTile tile)
         {
+            if (isFrozen) return;
+
             if (!isDragging) return;
             draggedTiles += 1;
             DoUserIndicatingTile(tile);
@@ -128,6 +158,8 @@ namespace citdev {
 
         public void OnTileClick(GameTile tile)
         {
+            if (isFrozen) return;
+
             isDragging = true;
             draggedTiles = 0;
             if (!isEligibleToAddToSelection(tile) && !selection.Contains(tile))
