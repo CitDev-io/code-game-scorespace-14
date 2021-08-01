@@ -9,6 +9,7 @@ public class RoundController : MonoBehaviour
 {
     [SerializeField] GameObject nextRoundPanel;
     [SerializeField] GameObject losePanel;
+    [SerializeField] GameObject levelupPanel;
 
     [SerializeField] public int HitPoints;
     [SerializeField] public int HitPointsMax = 50;
@@ -17,16 +18,14 @@ public class RoundController : MonoBehaviour
     [SerializeField] public int ArmorMax = 50;
     [SerializeField] public int Coins = 0;
     [SerializeField] public int Kills = 0;
-    [SerializeField] public int CharacterLevel = 1;
+    [SerializeField] public int CharacterLevel = 0;
     [SerializeField] public int NextLevelAt = 5;
     GameController_DDOL _gc;
 
+    [SerializeField] List<UI_UpgradeOption> upgradeSlots;
+
     int enemyHp = 4;
     int enemyDmg = 2;
-    int coinValue = 10;
-    int swordValue = 1;
-    int heartValue = 1;
-    int armorValue = 1;
 
     int turn = 1;
     int round = 1;
@@ -38,10 +37,16 @@ public class RoundController : MonoBehaviour
         return _gc.totalKills;
     }
 
+    public void UpgradeSelected()
+    {
+        levelupPanel.SetActive(false);
+    }
+
     private void Start()
     {
         nextRoundPanel.SetActive(false);
         losePanel.SetActive(false);
+        levelupPanel.SetActive(false);
         _gc = GameObject.FindObjectOfType<GameController_DDOL>();
 
         round = _gc.round;
@@ -51,14 +56,19 @@ public class RoundController : MonoBehaviour
 
     void SetEnemyStatsByRound()
     {
+        Debug.Log(round + "");
         switch(round)
         {
             case 1:
-                enemyHp = 1;
+                enemyHp = 3;
                 enemyDmg = 1;
                 break;
             case 2:
                 enemyHp = 4;
+                enemyDmg = 2;
+                break;
+            case 3:
+                enemyHp = 6;
                 enemyDmg = 2;
                 break;
             default:
@@ -186,7 +196,17 @@ public class RoundController : MonoBehaviour
 
     void DoLevelUp(int from, int to)
     {
-        Debug.Log("DING From " + from + " to " + to);
+        if (from == 0) return;
+
+        levelupPanel.SetActive(true);
+
+        foreach (UI_UpgradeOption upgradeSlot in upgradeSlots)
+        {
+            CharacterUpgrade rando = Resources.Load<CharacterUpgrade>("CharacterUpgrade/" + Random.Range(1, 9));
+            Debug.Log("rando " + rando.id);
+            upgradeSlot.SetupButtonWithValues(rando);
+        }
+        
     }
 
     void DoLose()
@@ -217,7 +237,7 @@ public class RoundController : MonoBehaviour
     {
         tilesCleared += 1;
 
-        if (tilesCleared > 70 && tilesCleared % 15 == 0)
+        if (tilesCleared > 40 && tilesCleared % 8 == 0)
         {
             Debug.Log(tilesCleared);
             return TileType.Monster;
@@ -234,21 +254,23 @@ public class RoundController : MonoBehaviour
 
     void PrepNewTile(GameTile tile)
     {
+        CharacterUpgrade stats = _gc.GetUpgradeValues();
+
         switch (tile.tileType) {
             case TileType.Coin:
-                tile.Power = coinValue;
+                tile.Power = stats.CoinValue;
                 tile.HitPoints = 0;
                 break;
             case TileType.Heart:
-                tile.Power = heartValue;
+                tile.Power = Random.Range(1, stats.HeartInstanceMax + 1);
                 tile.HitPoints = 0;
                 break;
             case TileType.Shield:
-                tile.Power = armorValue;
+                tile.Power = Random.Range(1, stats.ShieldInstanceMax + 1);
                 tile.HitPoints = 0;
                 break;
             case TileType.Sword:
-                tile.Power = swordValue;
+                tile.Power = Random.Range(stats.SwordInstanceMin, stats.SwordInstanceMax + 1);
                 tile.HitPoints = 0;
                 break;
             case TileType.Monster:
@@ -261,7 +283,7 @@ public class RoundController : MonoBehaviour
                 break;
         }
         tile.label1.text = tile.HitPoints > 0 ? tile.HitPoints + "" : "";
-        tile.label2.text = tile.Power > 0 ? tile.Power + "" : "";
+        tile.label2.text = tile.Power > 0 && tile.tileType != TileType.Coin ? tile.Power + "" : "";
         tile.TurnAppeared = turn;
 
     }
@@ -270,7 +292,7 @@ public class RoundController : MonoBehaviour
     public void RecycleTileForPosition(GameTile tile, Vector2 position)
     {
         tile.SetTileType(GetNextTile());
-        tile.SnapToPosition(position.x, 10);
+        tile.SnapToPosition(position.x, 7);
         tile.AssignPosition(position);
         PrepNewTile(tile);
     }

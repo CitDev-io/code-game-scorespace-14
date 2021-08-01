@@ -13,9 +13,9 @@ namespace citdev {
         RoundController _rc;
         LineRenderer _lr;
 
-        int TOP_COLUMN_INDEX = 7;
-        int COUNT_ROWS = 8;
-        int COUNT_COLS = 8;
+        int TOP_COLUMN_INDEX = 5;
+        int COUNT_ROWS = 6;
+        int COUNT_COLS = 6;
 
         bool isDragging = false;
         int draggedTiles = 0;
@@ -72,7 +72,7 @@ namespace citdev {
 
         bool isSelectionFinishable()
         {
-            return selection.Count > 2;
+            return selection.Count > 1;
         }
 
         void ClearSelection()
@@ -156,10 +156,9 @@ namespace citdev {
                 return;
             }
 
-            List<GameTile> tilesToUnhighlight = selection.GetRange(index, selection.Count - index);
+            List<GameTile> tilesToUnhighlight = selection.GetRange(index + 1, selection.Count - index - 1);
             foreach (GameTile t in tilesToUnhighlight)
             {
-                t.ToggleHighlight(false);
                 selection.Remove(t);
                 OnSelectionChange();
             }
@@ -171,7 +170,6 @@ namespace citdev {
             {
                 selection.Add(tile);
                 OnSelectionChange();
-                tile.ToggleHighlight(true);
             }
         }
 
@@ -241,6 +239,12 @@ namespace citdev {
 
         void Start()
         {
+            StartCoroutine(StartAfterDelay());
+        }
+
+        IEnumerator StartAfterDelay()
+        {
+            yield return new WaitForSeconds(0.4f);
             StartGame();
         }
     }

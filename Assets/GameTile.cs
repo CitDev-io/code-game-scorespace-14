@@ -88,7 +88,7 @@ namespace citdev {
 
         public void ToggleHighlight(bool setVal)
         {
-            highlight.SetActive(setVal);
+            // highlight.SetActive(setVal);
             isHighlighted = setVal;
         }
 
