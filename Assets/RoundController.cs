@@ -13,7 +13,6 @@ public class RoundController : MonoBehaviour
 
     [SerializeField] public int HitPoints;
     [SerializeField] public int Armor;
-    [SerializeField] public int Coins = 0;
     [SerializeField] public int Kills = 0;
     [SerializeField] public int CharacterLevel = 0;
     [SerializeField] public int NextLevelAt = 5;
@@ -26,12 +25,24 @@ public class RoundController : MonoBehaviour
 
     int turn = 1;
     int round = 1;
-    public int KillRequirement = 30;
+    public int KillRequirement = 3;
     int tilesCleared = 0;
-    
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            DoLevelUp(1, 2);
+        }
+    }
     public int TotalKills()
     {
         return _gc.totalKills;
+    }
+
+    public int CoinBalance()
+    {
+        return _gc.coins;
     }
 
     public CharacterUpgrade StatSheet()
@@ -49,16 +60,22 @@ public class RoundController : MonoBehaviour
         nextRoundPanel.SetActive(false);
         losePanel.SetActive(false);
         levelupPanel.SetActive(false);
-        _gc = GameObject.FindObjectOfType<GameController_DDOL>();
+        _gc = FindObjectOfType<GameController_DDOL>();
 
         round = _gc.round;
         DoCharacterProgressionCheck();
         SetEnemyStatsByRound();
+        SetupCharacterForRound();
+    }
+
+    void SetupCharacterForRound()
+    {
+        int startingShields = _gc.GetUpgradeValues().RoundStartShieldCount;
+        Armor += startingShields;
     }
 
     void SetEnemyStatsByRound()
     {
-        Debug.Log(round + "");
         switch(round)
         {
             case 1:
@@ -142,7 +159,7 @@ public class RoundController : MonoBehaviour
         if (healthGained != 0) ApplyHpChange(healthGained);
         if (armorGained != 0) ApplyArmorChange(armorGained);
         
-        Coins += coinGained;
+        _gc.CoinBalanceChange(coinGained);
 
         foreach(GameTile monster in enemies)
         {
@@ -168,7 +185,7 @@ public class RoundController : MonoBehaviour
     void OnMonsterKill()
     {
         Kills += 1;
-        GameObject.FindObjectOfType<GameController_DDOL>().OnMonsterKilled();
+        _gc.OnMonsterKilled();
         DoCharacterProgressionCheck();
       
         if (Kills >= KillRequirement)
@@ -179,7 +196,7 @@ public class RoundController : MonoBehaviour
 
     void DoCharacterProgressionCheck()
     {
-        int totalKills = GameObject.FindObjectOfType<GameController_DDOL>().totalKills;
+        int totalKills = _gc.totalKills;
         int prevLevel = CharacterLevel;
         int achievedLevel = 1;
         int costOfEntry = 5;
@@ -204,10 +221,24 @@ public class RoundController : MonoBehaviour
 
         levelupPanel.SetActive(true);
 
+        List<int> pickedUpgrades = new List<int>();
+        CharacterUpgrade currentUps = _gc.GetUpgradeValues();
+
+        if (currentUps.SwordInstanceMin == currentUps.SwordInstanceMax)
+        {
+            pickedUpgrades.Add(5); // Make Minimum Sword +1 unavilable
+        }
+
         foreach (UI_UpgradeOption upgradeSlot in upgradeSlots)
         {
-            CharacterUpgrade rando = Resources.Load<CharacterUpgrade>("CharacterUpgrade/" + Random.Range(1, 9));
-            Debug.Log("rando " + rando.id);
+            int randomId = Random.Range(1, 9);
+            while (pickedUpgrades.Contains(randomId))
+            {
+                randomId = Random.Range(1, 9);
+            }
+            pickedUpgrades.Add(randomId);
+            CharacterUpgrade rando = Resources.Load<CharacterUpgrade>("CharacterUpgrade/" + randomId);
+
             upgradeSlot.SetupButtonWithValues(rando);
         }
         
@@ -220,7 +251,7 @@ public class RoundController : MonoBehaviour
     }
     void DoVictory()
     {
-        GameObject.FindObjectOfType<GameController_DDOL>().round += 1;
+        _gc.round += 1;
         nextRoundPanel.SetActive(true);
     }
 
@@ -243,7 +274,6 @@ public class RoundController : MonoBehaviour
 
         if (tilesCleared > 40 && tilesCleared % 8 == 0)
         {
-            Debug.Log(tilesCleared);
             return TileType.Monster;
         }
 

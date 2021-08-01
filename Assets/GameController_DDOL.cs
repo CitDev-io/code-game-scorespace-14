@@ -7,13 +7,14 @@ public class GameController_DDOL : MonoBehaviour
 {
     public int round = 1;
     public int totalKills = 0;
+    public int coins = 0;
     public List<CharacterUpgrade> upgrades = new List<CharacterUpgrade>();
     CharacterUpgrade _base;
+    CharacterUpgrade aggregate;
 
     void Awake()
     {
         _base = Resources.Load<CharacterUpgrade>("CharacterUpgrade/Base");
-        Debug.Log(_base.CoinValue);
         DontDestroyOnLoad(this.gameObject);
         Reset();
     }
@@ -24,6 +25,12 @@ public class GameController_DDOL : MonoBehaviour
         totalKills = 0;
         upgrades.Clear();
         upgrades.Add(_base);
+        aggregate = _base;
+    }
+
+    public void CoinBalanceChange(int delta)
+    {
+        coins += delta;
     }
 
     public void OnMonsterKilled()
@@ -35,6 +42,7 @@ public class GameController_DDOL : MonoBehaviour
     {
         if (upgrade == null) return;
         upgrades.Add(upgrade);
+        aggregate = GenerateAggregateSheet();
     }
 
     public CharacterUpgrade GetUpgradeValues()
@@ -44,6 +52,12 @@ public class GameController_DDOL : MonoBehaviour
         {
             return upgrades[0];
         }
+
+        return aggregate;
+    }
+
+    CharacterUpgrade GenerateAggregateSheet()
+    {
         CharacterUpgrade aggregated = upgrades.Aggregate(
             ScriptableObject.CreateInstance<CharacterUpgrade>(),
             (acc, cur) =>

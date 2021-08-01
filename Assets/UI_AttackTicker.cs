@@ -1,18 +1,19 @@
 using UnityEngine;
 using TMPro;
 
-public class UI_CoinTicker : MonoBehaviour
+public class UI_AttackTicker : MonoBehaviour
 {
     GameController_DDOL _gc;
     TextMeshProUGUI _txt;
 
     private void Start()
     {
-        _gc = GameObject.FindObjectOfType<GameController_DDOL>();
+        _gc = FindObjectOfType<GameController_DDOL>();
         _txt = GetComponent<TextMeshProUGUI>();
     }
     private void OnGUI()
     {
-        _txt.text = _gc.coins + "";
+        CharacterUpgrade up = _gc.GetUpgradeValues();
+        _txt.text = up.SwordInstanceMin + "/" + up.SwordInstanceMax;
     }
 }
