@@ -13,6 +13,6 @@ public class UI_XPTicker : MonoBehaviour
     }
     private void OnGUI()
     {
-        _txt.text = _rc.Kills + " / " + _rc.KillRequirement;
+        _txt.text = "x" + (_rc.KillRequirement - _rc.Kills);
     }
 }

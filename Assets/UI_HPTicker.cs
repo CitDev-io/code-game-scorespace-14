@@ -13,6 +13,7 @@ public class UI_HPTicker : MonoBehaviour
     }
     private void OnGUI()
     {
-        _txt.text = _rc.HitPoints + " / " + _rc.HitPointsMax;
+
+        _txt.text = _rc.HitPoints + " / " + _rc.StatSheet().HitPointMax;
     }
 }

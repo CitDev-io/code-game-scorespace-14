@@ -13,6 +13,6 @@ public class UI_ArmorTicker : MonoBehaviour
     }
     private void OnGUI()
     {
-        _txt.text = _rc.Armor + " / " + _rc.ArmorMax;
+        _txt.text = _rc.Armor + " / " + _rc.StatSheet().ShieldMax;
     }
 }

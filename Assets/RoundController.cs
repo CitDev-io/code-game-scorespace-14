@@ -12,10 +12,7 @@ public class RoundController : MonoBehaviour
     [SerializeField] GameObject levelupPanel;
 
     [SerializeField] public int HitPoints;
-    [SerializeField] public int HitPointsMax = 50;
-
     [SerializeField] public int Armor;
-    [SerializeField] public int ArmorMax = 50;
     [SerializeField] public int Coins = 0;
     [SerializeField] public int Kills = 0;
     [SerializeField] public int CharacterLevel = 0;
@@ -35,6 +32,11 @@ public class RoundController : MonoBehaviour
     public int TotalKills()
     {
         return _gc.totalKills;
+    }
+
+    public CharacterUpgrade StatSheet()
+    {
+        return _gc.GetUpgradeValues();
     }
 
     public void UpgradeSelected()
@@ -97,7 +99,8 @@ public class RoundController : MonoBehaviour
 
     void ApplyHpChange(int changeAmount)
     {
-        HitPoints = Mathf.Clamp(HitPoints + changeAmount, 0, HitPointsMax);
+        CharacterUpgrade stats = _gc.GetUpgradeValues();
+        HitPoints = Mathf.Clamp(HitPoints + changeAmount, 0, stats.HitPointMax);
 
         if (HitPoints == 0)
         {
@@ -108,7 +111,8 @@ public class RoundController : MonoBehaviour
 
     void ApplyArmorChange(int changeAmount)
     {
-        Armor = Mathf.Clamp(Armor + changeAmount, 0, ArmorMax);
+        CharacterUpgrade stats = _gc.GetUpgradeValues();
+        Armor = Mathf.Clamp(Armor + changeAmount, 0, stats.ShieldMax);
     }
 
     public void PlayerCollectedTiles(List<GameTile> collected, BoardController board)
