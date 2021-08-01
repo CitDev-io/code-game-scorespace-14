@@ -20,6 +20,8 @@ public class RoundController : MonoBehaviour
     [SerializeField] public int Kills = 0;
     [SerializeField] public int CharacterLevel = 0;
     [SerializeField] public int NextLevelAt = 5;
+    [SerializeField] public int RoundScore = 0;
+
     GameController_DDOL _gc;
 
     bool roundEnded = false;
@@ -32,8 +34,10 @@ public class RoundController : MonoBehaviour
 
     int turn = 1;
     int round = 1;
+    public bool CanCastHelm = false;
     public int KillRequirement = 15;
-    int tilesCleared = 0;
+    public int tilesCleared = 0;
+    public int RoundMoves = 0;
 
     private void Update()
     {
@@ -42,6 +46,15 @@ public class RoundController : MonoBehaviour
             DoLevelUp(1, 2);
         }
     }
+
+    public void AttemptToCastHelm()
+    {
+        if (!CanCastHelm) return;
+
+        FindObjectOfType<BoardController>()?.ConvertHeartsToSwords(5);
+        CanCastHelm = false;
+    }
+
     public int TotalKills()
     {
         return _gc.totalKills;
@@ -61,6 +74,7 @@ public class RoundController : MonoBehaviour
     {
         WaitingForUpgrade = false;
         levelupPanel.SetActive(false);
+        ApplyHpChange(_gc.GetUpgradeValues().HitPointMax);
     }
 
     private void Start()
@@ -70,6 +84,7 @@ public class RoundController : MonoBehaviour
         levelupPanel.SetActive(false);
         _gc = FindObjectOfType<GameController_DDOL>();
 
+        _gc.round += 1;
         round = _gc.round;
         DoCharacterProgressionCheck();
         SetEnemyStatsByRound();
@@ -78,6 +93,10 @@ public class RoundController : MonoBehaviour
 
     void SetupCharacterForRound()
     {
+        if (_gc.hasHelmet)
+        {
+            CanCastHelm = true;
+        }
         CharacterUpgrade cu = _gc.GetUpgradeValues();
         int startingShields = cu.RoundStartShieldCount;
         Armor += startingShields;
@@ -86,25 +105,8 @@ public class RoundController : MonoBehaviour
 
     void SetEnemyStatsByRound()
     {
-        switch(round)
-        {
-            case 1:
-                enemyHp = 3;
-                enemyDmg = 1;
-                break;
-            case 2:
-                enemyHp = 4;
-                enemyDmg = 2;
-                break;
-            case 3:
-                enemyHp = 6;
-                enemyDmg = 2;
-                break;
-            default:
-                enemyHp = 10;
-                enemyDmg = 3;
-                break;
-        }
+        enemyHp = round + 1;
+        enemyDmg = Mathf.Max(round - (round % 2), 1);
     }
 
     void AssessAttack(int damage)
@@ -139,11 +141,23 @@ public class RoundController : MonoBehaviour
     void ApplyArmorChange(int changeAmount)
     {
         CharacterUpgrade stats = _gc.GetUpgradeValues();
-        Armor = Mathf.Clamp(Armor + changeAmount, 0, stats.ShieldMax);
+        Armor = Mathf.Clamp(Armor + changeAmount, 0, stats.ShieldMax + (int) (stats.ShieldMax * (stats.armorMaxPercentModifier / 100)));
     }
 
     public void PlayerCollectedTiles(List<GameTile> collected, BoardController board)
     {
+        RoundMoves++;
+        int chainLength = collected.Count;
+        int pointMultiplier = 1;
+        if (chainLength >= 5) pointMultiplier++;
+        if (chainLength >= 6) pointMultiplier++;
+        if (chainLength >= 8) pointMultiplier++;
+        if (chainLength >= 10) pointMultiplier++;
+
+        int pointsEarned = chainLength * pointMultiplier * 10;
+        _gc.score += pointsEarned;
+        RoundScore += pointsEarned;
+
         int healthGained = collected
             .Where((o) => o.tileType == TileType.Heart)
             .Aggregate(0, (acc, cur) => acc + cur.Power);
@@ -152,9 +166,19 @@ public class RoundController : MonoBehaviour
             .Where((o) => o.tileType == TileType.Shield)
             .Aggregate(0, (acc, cur) => acc + cur.Power);
 
+        int coinMultiplier = 1;
+
+        List<GameTile> coinsCollected = collected.Where((o) => o.tileType == TileType.Coin).ToList();
+
+        if (_gc.hasBelt && coinsCollected.Count >= 5)
+        {
+            coinMultiplier = 2;
+            // (e) : STOLE DOUBLE COINS
+        }
+
         int coinGained = collected
             .Where((o) => o.tileType == TileType.Coin)
-            .Aggregate(0, (acc, cur) => acc + cur.Power);
+            .Aggregate(0, (acc, cur) => acc + cur.Power) * coinMultiplier;
 
         int damageDealt = collected
             .Where((o) => o.tileType == TileType.Sword)
@@ -252,7 +276,6 @@ public class RoundController : MonoBehaviour
 
             upgradeSlot.SetupButtonWithValues(rando);
         }
-        
     }
 
     void DoLose()
@@ -263,7 +286,6 @@ public class RoundController : MonoBehaviour
     void DoVictory()
     {
         roundEnded = true;
-        _gc.round += 1;
         OnRoundEnd?.Invoke();
         StartCoroutine("RoundVictory");
     }
@@ -278,9 +300,10 @@ public class RoundController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         FindObjectOfType<UI_SlidingStartText>().GoGoStartText("ROUND COMPLETE", "ROUND COMPLETE");
 
-
+        _gc.PreviousRoundScore = RoundScore;
+        _gc.PreviousRoundMoves = RoundMoves;
         yield return new WaitForSeconds(3f);
-        _gc.ChangeScene("RoundScore");    
+        _gc.ChangeScene("RoundScore");
     }
 
     void DoEnemiesTurn()
@@ -350,7 +373,11 @@ public class RoundController : MonoBehaviour
         tile.label1.text = tile.HitPoints > 0 ? tile.HitPoints + "" : "";
         tile.label2.text = tile.Power > 0 && tile.tileType != TileType.Coin ? tile.Power + "" : "";
         tile.TurnAppeared = turn;
+    }
 
+    public void ConvertTileToSword(GameTile tile)
+    {
+        PrepNewTile(tile);
     }
 
     // should not be called locally! board needs to cascade guys above

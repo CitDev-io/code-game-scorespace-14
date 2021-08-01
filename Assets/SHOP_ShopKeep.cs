@@ -45,7 +45,7 @@ public class SHOP_ShopKeep : MonoBehaviour
     {
         if (_gc.coins < 1000 || _gc.hasChestplate) return;
 
-        _gc.hasChestplate = true;
+        _gc.ObtainChestplate();
         _gc.CoinBalanceChange(-1000);
     }
 

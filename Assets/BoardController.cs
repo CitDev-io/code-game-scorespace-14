@@ -21,6 +21,37 @@ namespace citdev {
         int draggedTiles = 0;
         bool isFrozen = false;
 
+        public void MinimumSwordRaiseTo(int value)
+        {
+            foreach (GameTile sword in tiles.Where((o) => o.tileType == TileType.Sword && o.Power < value))
+            {
+                sword.Power = value;
+                sword.label2.text = value + "";
+            }
+        }
+
+        public void ConvertHeartsToSwords(int count)
+        {
+            int converted = 0;
+            foreach(GameTile heart in tiles.Where((o) => o.tileType == TileType.Heart))
+            {
+                if (converted < count)
+                {
+                    heart.SetTileType(TileType.Sword);
+                    _rc.ConvertTileToSword(heart);
+                    converted += 1;
+                }
+            }
+        }
+
+        public void RaiseCoinValueTo(int value)
+        {
+            foreach (GameTile coin in tiles.Where((o) => o.tileType == TileType.Coin))
+            {
+                coin.Power = value;
+            }
+        }
+
         public void ToggleTileFreeze(bool freeze)
         {
             selection.Clear();
@@ -44,6 +75,9 @@ namespace citdev {
                 if (draggedTiles > 0)
                 {
                     OnPlayerSolveAttemptComplete();
+                } else
+                {
+                    ClearSelection();
                 }
             }
         }

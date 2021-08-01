@@ -309,10 +309,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80de7625c0da91745b13ca3d9dfb8ea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  round: 1
+  round: 0
   totalKills: 0
   coins: 0
+  score: 0
+  PreviousRoundScore: 0
+  PreviousRoundMoves: 0
   upgrades: []
+  hasHelmet: 0
+  hasChestplate: 0
+  hasBelt: 0
 --- !u!114 &5752977232053459089
 MonoBehaviour:
   m_ObjectHideFlags: 0

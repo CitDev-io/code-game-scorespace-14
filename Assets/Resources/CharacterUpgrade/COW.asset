@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68f04166f2bc5384cb4639b0f3a91ebe, type: 3}
+  m_Name: COW
+  m_EditorClassIdentifier: 
+  id: 99
+  title: Chestplate of Warding
+  description: Double Max Armor
+  iconName: none
+  CoinValue: 0
+  ShieldInstanceMax: 0
+  HeartInstanceMax: 0
+  SwordInstanceMax: 0
+  SwordInstanceMin: 0
+  RoundStartShieldCount: 0
+  ShieldMax: 0
+  HitPointMax: 0
+  armorMaxPercentModifier: 100

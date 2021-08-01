@@ -18,4 +18,5 @@ public class CharacterUpgrade : ScriptableObject
     public int RoundStartShieldCount = 0;
     public int ShieldMax = 0;
     public int HitPointMax = 0;
+    public int armorMaxPercentModifier = 0;
 }
