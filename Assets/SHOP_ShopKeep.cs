@@ -25,7 +25,7 @@ public class SHOP_ShopKeep : MonoBehaviour
     {
         int price = getGoingRate();
 
-        mb.interactable = _gc.coins >= 200;
+        mb.interactable = _gc.coins >= 100;
 
         helm.interactable = _gc.coins >= price && !_gc.hasHelmet;
         chest.interactable = _gc.coins >= price && !_gc.hasChestplate;

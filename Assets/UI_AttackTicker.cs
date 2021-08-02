@@ -14,6 +14,6 @@ public class UI_AttackTicker : MonoBehaviour
     private void OnGUI()
     {
         CharacterUpgrade up = _gc.GetUpgradeValues();
-        _txt.text = up.SwordInstanceMin + "/" + up.SwordInstanceMax;
+        _txt.text = up.SwordInstanceMin + " / " + up.SwordInstanceMax;
     }
 }

@@ -13,6 +13,6 @@ public class UI_LevelTicker : MonoBehaviour
     }
     private void OnGUI()
     {
-        _txt.text = _rc.CharacterLevel + "";
+        _txt.text = "level " + _rc.CharacterLevel;
     }
 }
