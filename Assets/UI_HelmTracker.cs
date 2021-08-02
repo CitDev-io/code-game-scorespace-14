@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class UI_HelmTracker : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class UI_HelmTracker : MonoBehaviour
     [SerializeField] Sprite borderOn;
     [SerializeField] Sprite borderOff;
     [SerializeField] Image border;
+    [SerializeField] TextMeshProUGUI chargeLabel;
 
     void Start()
     {
@@ -25,6 +27,7 @@ public class UI_HelmTracker : MonoBehaviour
     private void OnGUI()
     {
         border.sprite = _rc.CanCastHelm ? borderOn : borderOff;
+        chargeLabel.gameObject.SetActive(_rc.CanCastHelm);
     }
 
     public void OnMouseDown()

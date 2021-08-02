@@ -8,6 +8,7 @@ public class SHOP_ShopKeep : MonoBehaviour
 {
     GameController_DDOL _gc;
     [SerializeField] Button mb;
+    [SerializeField] TextMeshProUGUI mbPrice;
     [SerializeField] Button helm;
     [SerializeField] TextMeshProUGUI helmPrice;
     [SerializeField] Button chest;
@@ -21,11 +22,11 @@ public class SHOP_ShopKeep : MonoBehaviour
         _gc = FindObjectOfType<GameController_DDOL>();
     }
 
-    private void FixedUpdate()
+    void OnGUI()
     {
         int price = getGoingRate();
 
-        mb.interactable = _gc.coins >= 100;
+        mb.interactable = _gc.coins >= _gc.mysteryBoxPrice;
 
         helm.interactable = _gc.coins >= price && !_gc.hasHelmet;
         chest.interactable = _gc.coins >= price && !_gc.hasChestplate;
@@ -34,6 +35,7 @@ public class SHOP_ShopKeep : MonoBehaviour
         helmPrice.text = _gc.hasHelmet ? "OWNED" : "" + price;
         chestPrice.text = _gc.hasChestplate ? "OWNED" : "" + price;
         beltPrice.text = _gc.hasBelt ? "OWNED" : "" + price;
+        mbPrice.text = _gc.mysteryBoxPrice + "";
     }
 
     int getGoingRate()
@@ -56,9 +58,10 @@ public class SHOP_ShopKeep : MonoBehaviour
 
     public void AttemptToPurchaseMysteryBox()
     {
-        if (_gc.coins < 100) return;
+        if (_gc.coins < _gc.mysteryBoxPrice) return;
 
-        _gc.CoinBalanceChange(-100);
+        _gc.CoinBalanceChange(-_gc.mysteryBoxPrice);
+        _gc.mysteryBoxPrice = Mathf.FloorToInt(_gc.mysteryBoxPrice * 1.20f);
         _gc.ChangeScene("OpenMysteryBox");
     }
 

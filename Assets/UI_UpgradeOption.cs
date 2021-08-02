@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class UI_UpgradeOption : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class UI_UpgradeOption : MonoBehaviour
     [SerializeField] TextMeshProUGUI Description;
     GameController_DDOL _gc;
     RoundController _rc;
+    [SerializeField] Image Icon;
 
     private void Start()
     {
@@ -22,6 +24,7 @@ public class UI_UpgradeOption : MonoBehaviour
         Upgrade = upgrade;
         Title.text = upgrade.title;
         Description.text = upgrade.description;
+        Icon.sprite = Resources.Load<Sprite>("Images/" + upgrade.iconName);
     }
 
     public void OnClick()

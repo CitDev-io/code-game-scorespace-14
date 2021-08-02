@@ -72,6 +72,7 @@ public class RoundController : MonoBehaviour
 
     public void UpgradeSelected()
     {
+        FindObjectOfType<BoardController>()?.ToggleTileFreeze(false);
         WaitingForUpgrade = false;
         levelupPanel.SetActive(false);
         ApplyHpChange(_gc.GetUpgradeValues().HitPointMax);
@@ -252,6 +253,7 @@ public class RoundController : MonoBehaviour
     void DoLevelUp(int from, int to)
     {
         if (from == 0) return;
+        FindObjectOfType<BoardController>()?.ToggleTileFreeze(true);
         WaitingForUpgrade = true;
 
         levelupPanel.SetActive(true);
@@ -298,7 +300,7 @@ public class RoundController : MonoBehaviour
         }
 
         yield return new WaitForSeconds(0.5f);
-        FindObjectOfType<UI_SlidingStartText>().GoGoStartText("ROUND COMPLETE", "ROUND COMPLETE");
+        FindObjectOfType<UI_SlidingStartText>().GoGoStartText("WAVE COMPLETE", "WAVE COMPLETE");
 
         _gc.PreviousRoundScore = RoundScore;
         _gc.PreviousRoundMoves = RoundMoves;

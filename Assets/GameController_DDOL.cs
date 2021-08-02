@@ -10,6 +10,7 @@ public class GameController_DDOL : MonoBehaviour
     public int totalKills = 0;
     public int coins = 0;
     public int score = 0;
+    public int mysteryBoxPrice = 100;
 
     public int PreviousRoundScore = 0;
     public int PreviousRoundMoves = 0;
@@ -48,6 +49,7 @@ public class GameController_DDOL : MonoBehaviour
         score = 0;
         PreviousRoundScore = 0;
         PreviousRoundMoves = 0;
+        mysteryBoxPrice = 100;
         hasBelt = false;
         hasHelmet = false;
         hasChestplate = false;
