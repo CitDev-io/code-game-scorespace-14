@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 3
   title: Prepared
   description: +1 Starting Armor Point
-  iconName: none
+  iconName: upgrade-shield-start-plus-1
   CoinValue: 0
   ShieldInstanceMax: 0
   HeartInstanceMax: 0
@@ -24,3 +24,4 @@ MonoBehaviour:
   RoundStartShieldCount: 1
   ShieldMax: 0
   HitPointMax: 0
+  armorMaxPercentModifier: 0

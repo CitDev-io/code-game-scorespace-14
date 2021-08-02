@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 4
   title: Damage Potential
   description: +1 to Maximum Sword Value
-  iconName: none
+  iconName: upgrade-sword-max-plus-1
   CoinValue: 0
   ShieldInstanceMax: 0
   HeartInstanceMax: 0
@@ -24,3 +24,4 @@ MonoBehaviour:
   RoundStartShieldCount: 0
   ShieldMax: 0
   HitPointMax: 0
+  armorMaxPercentModifier: 0

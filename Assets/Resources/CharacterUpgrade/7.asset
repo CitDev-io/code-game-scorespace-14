@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 7
   title: Armor Boost
   description: +1 to Maximum Shield Value
-  iconName: none
+  iconName: upgrade-shield-max-plus-1
   CoinValue: 0
   ShieldInstanceMax: 1
   HeartInstanceMax: 0
@@ -24,3 +24,4 @@ MonoBehaviour:
   RoundStartShieldCount: 0
   ShieldMax: 0
   HitPointMax: 0
+  armorMaxPercentModifier: 0

@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 1
   title: Toughness
   description: +2 Max Hit Points
-  iconName: none
+  iconName: upgrade-heart-cap-plus-2
   CoinValue: 0
   ShieldInstanceMax: 0
   HeartInstanceMax: 0
@@ -24,3 +24,4 @@ MonoBehaviour:
   RoundStartShieldCount: 0
   ShieldMax: 0
   HitPointMax: 2
+  armorMaxPercentModifier: 0

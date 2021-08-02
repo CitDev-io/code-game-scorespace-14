@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 8
   title: Resourceful
   description: '+10 to the value of all Coins '
-  iconName: none
+  iconName: upgrade-coin-plus-10
   CoinValue: 10
   ShieldInstanceMax: 0
   HeartInstanceMax: 0
@@ -24,3 +24,4 @@ MonoBehaviour:
   RoundStartShieldCount: 0
   ShieldMax: 0
   HitPointMax: 0
+  armorMaxPercentModifier: 0
