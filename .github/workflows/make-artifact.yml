@@ -47,6 +47,6 @@ jobs:
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: webgl
-          ITCH_GAME: scorespace14
+          ITCH_GAME: kerboblin-crunch
           ITCH_USER: citizendevelopers
           PACKAGE: build
