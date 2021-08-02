@@ -584,6 +584,11 @@ MonoBehaviour:
   KillRequirement: 15
   tilesCleared: 0
   RoundMoves: 0
+  dmgPrefab: {fileID: 7223485370980304402, guid: 14ab5173ca2c87d4e91c641a5bdb4ae2, type: 3}
+  hpPrefab: {fileID: 6487280693032716880, guid: 257accde506d59a489ebf6520a3e0b6e, type: 3}
+  apPrefab: {fileID: 8766646252445709156, guid: 4c3f53a5a0d16cd4998a29343f52fba2, type: 3}
+  gpPrefab: {fileID: 1916482323283787625, guid: 48ba655b9a3951d4bba09518acb0664d, type: 3}
+  floaterParent: {fileID: 2039224253}
 --- !u!120 &185434371
 LineRenderer:
   m_ObjectHideFlags: 0

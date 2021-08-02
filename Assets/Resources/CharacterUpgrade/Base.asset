@@ -21,7 +21,7 @@ MonoBehaviour:
   HeartInstanceMax: 2
   SwordInstanceMax: 2
   SwordInstanceMin: 1
-  RoundStartShieldCount: 25
-  ShieldMax: 50
+  RoundStartShieldCount: 0
+  ShieldMax: 25
   HitPointMax: 50
   armorMaxPercentModifier: 0

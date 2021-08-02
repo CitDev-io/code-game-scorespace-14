@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 using UnityEngine.Networking;
-
+using System.Collections.Generic;
 
 public class UI_FinalScoreWindow : MonoBehaviour
 {
@@ -11,6 +11,7 @@ public class UI_FinalScoreWindow : MonoBehaviour
     [SerializeField] TMP_InputField input;
     bool Submitted = false;
     bool Complete = false;
+    [SerializeField] List<GameObject> clearGOsOnSuccess = new List<GameObject>();
 
     private void Start()
     {
@@ -55,8 +56,12 @@ public class UI_FinalScoreWindow : MonoBehaviour
             }
             else
             {
-                Debug.Log(webRequest.downloadHandler.text);
+                foreach(GameObject go in clearGOsOnSuccess)
+                {
+                    go.SetActive(false);
+                }
                 Complete = true;
+                input.text = "";
             }
         }
     }

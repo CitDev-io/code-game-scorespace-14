@@ -38,7 +38,32 @@ public class RoundController : MonoBehaviour
     public int KillRequirement = 15;
     public int tilesCleared = 0;
     public int RoundMoves = 0;
+    [SerializeField] GameObject dmgPrefab;
+    [SerializeField] GameObject hpPrefab;
+    [SerializeField] GameObject apPrefab;
+    [SerializeField] GameObject gpPrefab;
+    [SerializeField] GameObject floaterParent;
 
+    void FloatDamage(int dmg)
+    {
+        var go = Instantiate(dmgPrefab, floaterParent.transform);
+        go.GetComponent<TextMeshProUGUI>().text = "-" + dmg + " HP";
+    }
+    void FloatHeal(int dmg)
+    {
+        var go = Instantiate(hpPrefab, floaterParent.transform);
+        go.GetComponent<TextMeshProUGUI>().text = "+" + dmg + " HP";
+    }
+    void FloatArmor(int dmg)
+    {
+        var go = Instantiate(apPrefab, floaterParent.transform);
+        go.GetComponent<TextMeshProUGUI>().text = "+" + dmg + " AP";
+    }
+    void FloatGold(int dmg)
+    {
+        var go = Instantiate(gpPrefab, floaterParent.transform);
+        go.GetComponent<TextMeshProUGUI>().text = "+" + dmg + " GP";
+    }
     public void AttemptToCastHelm()
     {
         if (!CanCastHelm) return;
@@ -182,6 +207,12 @@ public class RoundController : MonoBehaviour
             .Where((o) => o.tileType == TileType.Coin)
             .Aggregate(0, (acc, cur) => acc + cur.Power) * coinMultiplier;
 
+        if (coinsCollected.Count > 0)
+        {
+            _gc.PlaySound("Coin_Collect");
+            FloatGold(coinGained);
+        }
+
         int damageDealt = collected
             .Where((o) => o.tileType == TileType.Sword)
             .Aggregate(0, (acc, cur) => acc + cur.Power);
@@ -196,11 +227,13 @@ public class RoundController : MonoBehaviour
         {
             ApplyHpChange(healthGained);
             _gc.PlaySound("Heart_Use");
+            FloatHeal(healthGained);
         }
         if (armorGained != 0)
         {
             ApplyArmorChange(armorGained);
             _gc.PlaySound("Shield_Use");
+            FloatArmor(armorGained);
         }
         
         _gc.CoinBalanceChange(coinGained);
@@ -347,6 +380,7 @@ public class RoundController : MonoBehaviour
         {
             int random = Random.Range(1, 4);
             _gc.PlaySound("Monster_Hit_" + random);
+            FloatDamage(damageReceived);
         }
         AssessAttack(damageReceived);
         FindObjectOfType<BoardController>()?.EnemyIconsTaunt();

@@ -817,6 +817,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _txt: {fileID: 1983378955}
   input: {fileID: 1741059057}
+  clearGOsOnSuccess:
+  - {fileID: 1741059055}
+  - {fileID: 1677343196}
 --- !u!1 &436000663
 GameObject:
   m_ObjectHideFlags: 0
