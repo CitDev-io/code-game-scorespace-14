@@ -115,7 +115,7 @@ public class SHOP_OpenBox : MonoBehaviour
                     }
                     break;
                 case 2:
-                    if (!_gc.hasChestplate)
+                    if (!_gc.hasHelmet)
                     {
                         // give em the chest
                         _text = "Helm of Conscription";
@@ -125,7 +125,7 @@ public class SHOP_OpenBox : MonoBehaviour
                     }
                     break;
                 default:
-                    if (!_gc.hasHelmet)
+                    if (!_gc.hasChestplate)
                     {
                         // give em the helmet
                         _text = "Chestplate of Warding";

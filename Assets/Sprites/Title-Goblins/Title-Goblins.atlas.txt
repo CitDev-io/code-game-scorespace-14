@@ -1,0 +1,16 @@
+Title-Goblins.png
+size:1145,245
+filter:Linear,Linear
+pma:true
+ladder
+bounds:2,30,213,608
+offsets:2,1,216,610
+rotate:90
+monster
+bounds:898,2,241,245
+offsets:1,2,243,249
+rotate:90
+monster-open
+bounds:612,2,241,284
+offsets:1,1,243,286
+rotate:90
