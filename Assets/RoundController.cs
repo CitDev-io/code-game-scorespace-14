@@ -72,10 +72,14 @@ public class RoundController : MonoBehaviour
 
     public void UpgradeSelected()
     {
-        FindObjectOfType<BoardController>()?.ToggleTileFreeze(false);
         WaitingForUpgrade = false;
         levelupPanel.SetActive(false);
         ApplyHpChange(_gc.GetUpgradeValues().HitPointMax);
+        if (!roundEnded)
+        {
+            FindObjectOfType<BoardController>()?.ToggleTileFreeze(false);
+
+        }
     }
 
     private void Start()

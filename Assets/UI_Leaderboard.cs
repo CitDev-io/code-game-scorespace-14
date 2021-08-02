@@ -32,7 +32,6 @@ public class UI_Leaderboard : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     InfamyResult res = JsonUtility.FromJson<InfamyResult>("{\"result\":" + webRequest.downloadHandler.text + "}");
 
                     int i = 0;
