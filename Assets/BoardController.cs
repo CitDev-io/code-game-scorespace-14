@@ -12,6 +12,7 @@ namespace citdev {
         List<GameTile> selection = new List<GameTile>();
         RoundController _rc;
         LineRenderer _lr;
+        GameController_DDOL _gc;
 
         int TOP_COLUMN_INDEX = 5;
         int COUNT_ROWS = 6;
@@ -235,6 +236,23 @@ namespace citdev {
             if (isEligibleToAddToSelection(tile))
             {
                 selection.Add(tile);
+
+                switch (tile.tileType) {
+                    case TileType.Coin:
+                        _gc.PlaySound("Coin_Select");
+                        break;
+                    case TileType.Heart:
+                        _gc.PlaySound("Heart_Select");
+                        break;
+                    case TileType.Shield:
+                        _gc.PlaySound("Shield_Select");
+                        break;
+
+                    default:
+                        _gc.PlaySound("Sword_Select");
+                        break;
+                }
+
                 OnSelectionChange();
             }
         }
@@ -305,6 +323,7 @@ namespace citdev {
 
         void Start()
         {
+            _gc = FindObjectOfType<GameController_DDOL>();
             StartCoroutine(StartAfterDelay());
         }
 

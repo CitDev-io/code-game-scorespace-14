@@ -36,7 +36,7 @@ public class UI_Leaderboard : MonoBehaviour
 
                     int i = 0;
                     foreach (LeaderboardEntry entry in res.result) {
-                        if (LeadersUI.Count >= i)
+                        if (LeadersUI.Count > i)
                         {
                             LeadersUI[i].SetLeader(entry.name, entry.score + "");
                         }

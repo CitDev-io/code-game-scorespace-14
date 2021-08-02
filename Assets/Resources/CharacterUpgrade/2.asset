@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 5
   title: Fortified
-  description: +2 to Maximum Armor Points
+  description: +5 to Maximum Armor Points
   iconName: upgrade-shield-cap-plus-2
   CoinValue: 0
   ShieldInstanceMax: 0

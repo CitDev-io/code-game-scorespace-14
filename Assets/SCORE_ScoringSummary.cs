@@ -34,9 +34,19 @@ public class SCORE_ScoringSummary : MonoBehaviour
 
         float moveBonus = 1f;
 
-        if (_gc.PreviousRoundMoves <= 60) moveBonus += 0.2f;
-        if (_gc.PreviousRoundMoves <= 45) moveBonus += 0.2f;
-        if (_gc.PreviousRoundMoves <= 30) moveBonus += 0.2f;
+        if (_gc.PreviousRoundMoves <= 20)
+        {
+            moveBonus = 3f;
+        } else if (_gc.PreviousRoundMoves <= 25)
+        {
+            moveBonus = 2f;
+        } else if (_gc.PreviousRoundMoves <= 30)
+        {
+            moveBonus = 1.5f;
+        } else if (_gc.PreviousRoundMoves <= 35)
+        {
+            moveBonus = 1.25f;
+        }
 
         movesBonus.text = "x" + moveBonus;
         movesCount.text = _gc.PreviousRoundMoves + "";

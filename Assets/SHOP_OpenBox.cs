@@ -49,19 +49,6 @@ public class SHOP_OpenBox : MonoBehaviour
             return;
         }
 
-        int reward = Random.Range(0, 101);
-
-        if (reward <= 75)
-        {
-            AwardRandomCoins();
-        } else if (reward <= 95)
-        {
-            AwardRandomUpgrade();
-        } else
-        {
-            AwardRandomItem();
-        }
-
         StartCoroutine("DoOpen");
     }
 
@@ -71,11 +58,13 @@ public class SHOP_OpenBox : MonoBehaviour
         _text = coinCt + " Coins";
         _desc = "Better luck next time";
         _sprite = spr_Coins;
+        _gc.PlaySound("Receive_Coins_MysteryBox");
         _gc.CoinBalanceChange(coinCt);
     }
 
     void AwardRandomUpgrade()
     {
+        _gc.PlaySound("Receive_Item_Upgrade_MysteryBox");
         int randomId = Random.Range(1, 9);
         while (randomId == 5)
         {
@@ -136,16 +125,34 @@ public class SHOP_OpenBox : MonoBehaviour
                     break;
             }
         }
+        _gc.PlaySound("Receive_Item_Upgrade_MysteryBox");
     }
 
     IEnumerator DoOpen()
     {
         isOpen = true;
+        _gc.PlaySound("Open_MysteryBox");
         chestSkeleton.AnimationState.SetAnimation(0, "open", false);
+
+        yield return new WaitForSeconds(0.65f);
+
+        int reward = Random.Range(0, 101);
+
+        if (reward <= 75)
+        {
+            AwardRandomCoins();
+        }
+        else if (reward <= 97)
+        {
+            AwardRandomUpgrade();
+        }
+        else
+        {
+            AwardRandomItem();
+        }
         rewardIcon.sprite = _sprite;
         rewardDesc.text = _desc;
         rewardName.text = _text;
-        yield return new WaitForSeconds(0.25f);
         rewardIcon.gameObject.SetActive(true);
         rewardName.gameObject.SetActive(true);
         rewardDesc.gameObject.SetActive(true);

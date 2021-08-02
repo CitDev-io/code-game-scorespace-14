@@ -39,18 +39,11 @@ public class RoundController : MonoBehaviour
     public int tilesCleared = 0;
     public int RoundMoves = 0;
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            DoLevelUp(1, 2);
-        }
-    }
-
     public void AttemptToCastHelm()
     {
         if (!CanCastHelm) return;
 
+        _gc.PlaySound("Special_Ability_Use");
         FindObjectOfType<BoardController>()?.ConvertHeartsToSwords(5);
         CanCastHelm = false;
     }
@@ -179,6 +172,10 @@ public class RoundController : MonoBehaviour
         {
             coinMultiplier = 2;
             // (e) : STOLE DOUBLE COINS
+            _gc.PlaySound("Special_Ability_Use");
+        } else if (coinsCollected.Count > 0)
+        {
+            _gc.PlaySound("Coin_Collect");
         }
 
         int coinGained = collected
@@ -195,12 +192,25 @@ public class RoundController : MonoBehaviour
         List<GameTile> clearableTiles = collected
             .Where((o) => o.tileType != TileType.Monster).ToList();
 
-        if (healthGained != 0) ApplyHpChange(healthGained);
-        if (armorGained != 0) ApplyArmorChange(armorGained);
+        if (healthGained != 0)
+        {
+            ApplyHpChange(healthGained);
+            _gc.PlaySound("Heart_Use");
+        }
+        if (armorGained != 0)
+        {
+            ApplyArmorChange(armorGained);
+            _gc.PlaySound("Shield_Use");
+        }
         
         _gc.CoinBalanceChange(coinGained);
 
-        foreach(GameTile monster in enemies)
+        if (enemies.Count > 0)
+        {
+            _gc.PlaySound("Sword_Hit");
+        }
+
+        foreach (GameTile monster in enemies)
         {
             // (e) : HITTING A MONSTER
             monster.HitPoints -= damageDealt;
@@ -333,6 +343,11 @@ public class RoundController : MonoBehaviour
         int damageReceived = monsters
                 .Aggregate(0, (acc, cur) => acc + cur.Power);
 
+        if (monsters.Count > 0)
+        {
+            int random = Random.Range(1, 4);
+            _gc.PlaySound("Monster_Hit_" + random);
+        }
         AssessAttack(damageReceived);
         FindObjectOfType<BoardController>()?.EnemyIconsTaunt();
         turn += 1;

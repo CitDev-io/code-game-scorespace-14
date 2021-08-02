@@ -49,8 +49,8 @@ public class SHOP_ShopKeep : MonoBehaviour
         switch (owned)
         {
             case 0: price = 500; break;
-            case 1: price = 1000; break;
-            default: price = 1500; break;
+            case 1: price = 2500; break;
+            default: price = 12500; break;
 
         }
         return price;
@@ -59,7 +59,6 @@ public class SHOP_ShopKeep : MonoBehaviour
     public void AttemptToPurchaseMysteryBox()
     {
         if (_gc.coins < _gc.mysteryBoxPrice) return;
-
         _gc.CoinBalanceChange(-_gc.mysteryBoxPrice);
         _gc.mysteryBoxPrice = Mathf.FloorToInt(_gc.mysteryBoxPrice * 1.20f);
         _gc.ChangeScene("OpenMysteryBox");
@@ -69,7 +68,7 @@ public class SHOP_ShopKeep : MonoBehaviour
     {
         int price = getGoingRate();
         if (_gc.coins < price || _gc.hasHelmet) return;
-
+        _gc.PlaySound("Coin_Collect");
         _gc.hasHelmet = true;
         _gc.CoinBalanceChange(-price);
     }
@@ -78,7 +77,7 @@ public class SHOP_ShopKeep : MonoBehaviour
     {
         int price = getGoingRate();
         if (_gc.coins < price || _gc.hasChestplate) return;
-
+        _gc.PlaySound("Coin_Collect");
         _gc.ObtainChestplate();
         _gc.CoinBalanceChange(-price);
     }
@@ -87,7 +86,7 @@ public class SHOP_ShopKeep : MonoBehaviour
     {
         int price = getGoingRate();
         if (_gc.coins < price || _gc.hasBelt) return;
-
+        _gc.PlaySound("Coin_Collect");
         _gc.hasBelt = true;
         _gc.CoinBalanceChange(-price);
     }

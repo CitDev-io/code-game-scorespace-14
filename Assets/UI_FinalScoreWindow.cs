@@ -10,6 +10,7 @@ public class UI_FinalScoreWindow : MonoBehaviour
     [SerializeField] TextMeshProUGUI _txt;
     [SerializeField] TMP_InputField input;
     bool Submitted = false;
+    bool Complete = false;
 
     private void Start()
     {
@@ -27,6 +28,11 @@ public class UI_FinalScoreWindow : MonoBehaviour
 
     public void OnSubmitButtonClicked()
     {
+        if (Complete)
+        {
+            _gc.ChangeScene("Leaderboard");
+            return;
+        }
         if (Submitted) return;
 
         Submitted = true;
@@ -49,7 +55,8 @@ public class UI_FinalScoreWindow : MonoBehaviour
             }
             else
             {
-                // Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                Debug.Log(webRequest.downloadHandler.text);
+                Complete = true;
             }
         }
     }
