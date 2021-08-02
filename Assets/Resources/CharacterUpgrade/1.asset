@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 1
   title: Toughness
-  description: +2 Max Hit Points
+  description: +5 Max Hit Points
   iconName: upgrade-heart-cap-plus-2
   CoinValue: 0
   ShieldInstanceMax: 0
@@ -23,5 +23,5 @@ MonoBehaviour:
   SwordInstanceMin: 0
   RoundStartShieldCount: 0
   ShieldMax: 0
-  HitPointMax: 2
+  HitPointMax: 5
   armorMaxPercentModifier: 0

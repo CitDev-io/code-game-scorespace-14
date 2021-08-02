@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 3
   title: Prepared
-  description: +1 Starting Armor Point
+  description: +5 Starting Armor Points
   iconName: upgrade-shield-start-plus-1
   CoinValue: 0
   ShieldInstanceMax: 0
   HeartInstanceMax: 0
   SwordInstanceMax: 0
   SwordInstanceMin: 0
-  RoundStartShieldCount: 1
+  RoundStartShieldCount: 5
   ShieldMax: 0
   HitPointMax: 0
   armorMaxPercentModifier: 0

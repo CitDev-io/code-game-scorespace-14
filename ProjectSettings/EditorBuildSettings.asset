@@ -26,4 +26,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/OpenMysteryBox.unity
     guid: b33f5e3f398cd1c46a8f166738f51ad9
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: 4ecf650971be7ae4c9a9725cd6064915
+  - enabled: 1
+    path: Assets/Scenes/Leaderboard.unity
+    guid: 10ef9e90e39060d42acb69c7aefab07c
   m_configObjects: {}

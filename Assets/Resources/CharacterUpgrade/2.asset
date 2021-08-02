@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68f04166f2bc5384cb4639b0f3a91ebe, type: 3}
   m_Name: 2
   m_EditorClassIdentifier: 
-  id: 2
+  id: 5
   title: Fortified
   description: +2 to Maximum Armor Points
   iconName: upgrade-shield-cap-plus-2
@@ -22,6 +22,6 @@ MonoBehaviour:
   SwordInstanceMax: 0
   SwordInstanceMin: 0
   RoundStartShieldCount: 0
-  ShieldMax: 2
+  ShieldMax: 5
   HitPointMax: 0
   armorMaxPercentModifier: 0

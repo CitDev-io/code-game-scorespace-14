@@ -282,9 +282,19 @@ public class RoundController : MonoBehaviour
 
     void DoLose()
     {
-        _gc.Reset();
-        losePanel.SetActive(true);
+        StartCoroutine("LoseRoutine");
     }
+
+    IEnumerator LoseRoutine()
+    {
+        FindObjectOfType<BoardController>()?.ToggleTileFreeze(true);
+        _gc.PreviousRoundMoves = RoundMoves;
+        _gc.PreviousRoundScore = RoundScore;
+        FindObjectOfType<UI_SlidingStartText>().GoGoStartText("YOU LOSE", "YOU LOSE");
+        yield return new WaitForSeconds(3.0f);
+        _gc.ChangeScene("GameOver");
+    }
+
     void DoVictory()
     {
         roundEnded = true;
